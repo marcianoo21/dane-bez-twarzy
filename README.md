@@ -1,60 +1,60 @@
-# Dane bez Twarzy
+# Dane bez Twarzy (Data Without a Face)
 
-**System anonimizacji danych osobowych w tekstach polskich**
+**Personal Data Anonymization System for Polish Texts**
 
-Biblioteka Python do automatycznej detekcji i anonimizacji danych wrażliwych w tekstach w języku polskim. Zaprojektowana dla projektu PLLuM (Polish Large Language Model).
+A Python library for automatic detection and anonymization of sensitive data in Polish-language texts. Designed for the PLLuM project (Polish Large Language Model).
 
-## Cele projektu
+## Project Goals
 
-- **Bezpieczeństwo danych** - wykrywanie i anonimizacja danych osobowych zgodnie z RODO
-- **Zachowanie struktury** - podmiana encji na tokeny zachowujące sens i gramatykę
-- **Wsparcie dla polskiego** - pełna obsługa fleksji i kontekstu językowego
-- **Wydajność** - skalowalne rozwiązanie do przetwarzania dużych zbiorów danych
+- **Data Security** - detection and anonymization of personal data in compliance with GDPR
+- **Structure Preservation** - replacing entities with tokens that maintain meaning and grammar
+- **Polish Language Support** - full handling of inflection and linguistic context
+- **Performance** - scalable solution for processing large datasets
 
-## Architektura
+## Architecture
 
-System wykorzystuje wielowarstwową architekturę:
+The system uses a multi-layered architecture:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        WEJŚCIE                              │
+│                          INPUT                              │
 │              "Jan Kowalski, PESEL 90010112345"              │
 └─────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
-│               ETAP 1: WARSTWA REGEX                         │
-│                    "Szybkie Sito"                           │
-│  • PESEL (z walidacją sumy kontrolnej)                      │
-│  • Email, telefon, IBAN                                     │
-│  • Daty (różne formaty)                                     │
-│  • Numery dokumentów                                        │
+│                 STAGE 1: REGEX LAYER                        │
+│                    "Quick Filter"                           │
+│  • PESEL (with checksum validation)                         │
+│  • Email, phone, IBAN                                       │
+│  • Dates (various formats)                                  │
+│  • Document numbers                                         │
 └─────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              ETAP 2: WARSTWA ML (NER)                       │
-│                   "Inteligencja"                            │
-│  • Imiona i nazwiska                                        │
-│  • Miasta vs adresy (rozróżnienie kontekstu)                │
-│  • Firmy, szkoły, stanowiska                                │
-│  • Dane wrażliwe (zdrowie, religia, poglądy)                │
+│                STAGE 2: ML LAYER (NER)                      │
+│                    "Intelligence"                           │
+│  • First names and surnames                                 │
+│  • Cities vs addresses (context distinction)                │
+│  • Companies, schools, job titles                           │
+│  • Sensitive data (health, religion, beliefs)               │
 └─────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
-│           ETAP 3: ANALIZA MORFOLOGICZNA                     │
-│  • Przypadek (mianownik, dopełniacz, biernik...)            │
-│  • Rodzaj (męski, żeński, nijaki)                           │
-│  • Liczba (pojedyncza, mnoga)                               │
+│             STAGE 3: MORPHOLOGICAL ANALYSIS                 │
+│  • Case (nominative, genitive, accusative...)               │
+│  • Gender (masculine, feminine, neuter)                     │
+│  • Number (singular, plural)                                │
 └─────────────────────────────────────────────────────────────┘
                               │
                     ┌─────────┴─────────┐
                     ▼                   ▼
     ┌───────────────────────┐   ┌───────────────────────┐
-    │   ŚCIEŻKA A           │   │   ŚCIEŻKA B           │
-    │   Ewaluacja           │   │   Dane Syntetyczne    │
-    │   (F1-score)          │   │   (Bonus 20%)         │
+    │   PATH A              │   │   PATH B              │
+    │   Evaluation          │   │   Synthetic Data      │
+    │   (F1-score)          │   │   (20% Bonus)         │
     └───────────────────────┘   └───────────────────────┘
                     │                   │
                     ▼                   ▼
@@ -64,71 +64,71 @@ System wykorzystuje wielowarstwową architekturę:
     └───────────────────────┘   └───────────────────────┘
 ```
 
-## Instalacja
+## Installation
 
-### Wymagania
+### Requirements
 
 - Python 3.8+
 - pip
 
-### Podstawowa instalacja
+### Basic Installation
 
 ```bash
-# Klonowanie repozytorium
+# Clone the repository
 git clone git@github.com:stanislawMarciniak/dane-bez-twarzy.git
 cd dane-bez-twarzy
 
-# Stworzenie wirtualnego środowiska
+# Create a virtual environment
 python -m venv venv
 source venv/bin/activate
 
-# Instalacja zależności
+# Install dependencies
 pip install -r requirements.txt
 
-# Pobranie modelu SpaCy dla polskiego
+# Download the SpaCy model for Polish
 python -m spacy download pl_core_news_lg
 ```
 
-### Instalacja z obsługą GPU (opcjonalna)
+### GPU Support Installation (optional)
 
 ```bash
-# PyTorch z CUDA
+# PyTorch with CUDA
 pip install torch --index-url https://download.pytorch.org/whl/cu118
 
-# Użycie GPU
-python main.py --device cuda --input dane.txt --output wyniki.txt
+# Using GPU
+python main.py --device cuda --input data.txt --output results.txt
 ```
 
-## Użycie
+## Usage
 
-### Interfejs wiersza poleceń (CLI)
+### Command Line Interface (CLI)
 
 ```bash
-# Pojedynczy tekst
+# Single text
 python main.py -t "Jan Kowalski mieszka w Warszawie"
 
-# Pojedynczy tekst podmieniony
+# Single text with replacement
 python main.py -t "Jan Kowalski mieszka w Warszawie" --synthetic
 
-# Przetwarzanie pliku
+# File processing
 python main.py -i ./data/orig.txt -o ./results/results.txt
 
-# Z generacją danych syntetycznych
+# With synthetic data generation
 python main.py -i ./data/orig.txt -o ./results/results.txt --synthetic
 
-# Tryb interaktywny
+# Interactive mode
 python main.py --interactive
 
-# Szczegółowe opcje
+# Detailed options
 python main.py --help
 ```
 
-### API Python
+### Python API
 
 ```python
 from anonymizer import anonymize_text, Anonymizer
 
-# Proste użycie
+# Simple usage
 result = anonymize_text(
     "Nazywam się Jan Kowalski, mój PESEL to 90010112345.",
     generate_synthetic=True
@@ -140,23 +140,23 @@ print(result['synthetic'])
 # "Nazywam się Adam Nowak, mój PESEL to 85032145678."
 ```
 
-### Zaawansowane użycie
+### Advanced Usage
 
 ```python
 from anonymizer import Anonymizer
 
-# Pełna konfiguracja
+# Full configuration
 anonymizer = Anonymizer(
-    use_ml=True,                    # Włącz warstwę ML (NER)
-    use_transformer=False,          # Użyj SpaCy (szybsze) zamiast Transformer
-    morphology_backend="spacy",     # Backend morfologiczny
-    generate_synthetic=True,        # Generuj dane syntetyczne
-    include_intermediate=True,      # Zachowaj pośrednią reprezentację
-    device="cpu",                   # Urządzenie (cpu/cuda)
-    num_workers=4                   # Liczba workerów
+    use_ml=True,                    # Enable ML layer (NER)
+    use_transformer=False,          # Use SpaCy (faster) instead of Transformer
+    morphology_backend="spacy",     # Morphology backend
+    generate_synthetic=True,        # Generate synthetic data
+    include_intermediate=True,      # Keep intermediate representation
+    device="cpu",                   # Device (cpu/cuda)
+    num_workers=4                   # Number of workers
 )
 
-# Pojedynczy tekst
+# Single text
 result = anonymizer.anonymize("""
 Pacjent: Jan Kowalski
 PESEL: 90010112345
@@ -166,135 +166,135 @@ Diagnoza: cukrzyca typu 2
 """)
 
 print(result.anonymized)
-print(result.intermediate)  # Z metadanymi morfologicznymi
-print(result.synthetic)     # Dane syntetyczne
-print(result.entities)      # Lista wykrytych encji
+print(result.intermediate)  # With morphological metadata
+print(result.synthetic)     # Synthetic data
+print(result.entities)      # List of detected entities
 
-# Przetwarzanie wsadowe
-texts = ["Tekst 1...", "Tekst 2...", "Tekst 3..."]
+# Batch processing
+texts = ["Text 1...", "Text 2...", "Text 3..."]
 results = anonymizer.anonymize_batch(texts, show_progress=True)
 ```
 
-### Przetwarzanie plików
+### File Processing
 
 ```python
 from anonymizer import anonymize_file
 
 # JSONL
 anonymize_file(
-    "dane_wejsciowe.jsonl",
-    "dane_wyjsciowe.jsonl",
+    "input_data.jsonl",
+    "output_data.jsonl",
     format="jsonl",
     generate_synthetic=True
 )
 
-# TXT (jeden tekst na linię)
+# TXT (one text per line)
 anonymize_file(
-    "teksty.txt",
-    "teksty_anonimizowane.txt",
+    "texts.txt",
+    "anonymized_texts.txt",
     format="txt"
 )
 ```
 
-## Obsługiwane kategorie danych
+## Supported Data Categories
 
-### 1. Dane identyfikacyjne osobowe
+### 1. Personal Identification Data
 
-| Token                  | Opis                 | Przykład            |
-| ---------------------- | -------------------- | ------------------- |
-| `{name}`               | Imiona               | Jan, Anna           |
-| `{surname}`            | Nazwiska             | Kowalski, Nowak     |
-| `{age}`                | Wiek                 | 25 lat              |
-| `{date-of-birth}`      | Data urodzenia       | 15.03.1990          |
-| `{date}`               | Inne daty            | przyjęto 23.09.2023 |
-| `{sex}`                | Płeć                 | mężczyzna, kobieta  |
-| `{religion}`           | Wyznanie             | katolik             |
-| `{political-view}`     | Poglądy polityczne   | konserwatysta       |
-| `{ethnicity}`          | Pochodzenie etniczne | Ukrainiec           |
-| `{sexual-orientation}` | Orientacja seksualna | heteroseksualny     |
-| `{health}`             | Dane zdrowotne       | cukrzyca typu 2     |
-| `{relative}`           | Relacje rodzinne     | mój brat Piotr      |
+| Token                  | Description        | Example             |
+| ---------------------- | ------------------ | ------------------- |
+| `{name}`               | First names        | Jan, Anna           |
+| `{surname}`            | Surnames           | Kowalski, Nowak     |
+| `{age}`                | Age                | 25 years old        |
+| `{date-of-birth}`      | Date of birth      | 15.03.1990          |
+| `{date}`               | Other dates        | admitted 23.09.2023 |
+| `{sex}`                | Sex                | male, female        |
+| `{religion}`           | Religion           | Catholic            |
+| `{political-view}`     | Political views    | conservative        |
+| `{ethnicity}`          | Ethnic origin      | Ukrainian           |
+| `{sexual-orientation}` | Sexual orientation | heterosexual        |
+| `{health}`             | Health data        | type 2 diabetes     |
+| `{relative}`           | Family relations   | my brother Piotr    |
 
-### 2. Dane kontaktowe i lokalizacyjne
+### 2. Contact and Location Data
 
-| Token       | Opis                        | Przykład                     |
-| ----------- | --------------------------- | ---------------------------- |
-| `{city}`    | Miasto (lokalizacja ogólna) | Jadę do Krakowa              |
-| `{address}` | Pełny adres                 | ul. Długa 5, 00-001 Warszawa |
-| `{email}`   | Adres email                 | jan@gmail.com                |
-| `{phone}`   | Numer telefonu              | +48 123 456 789              |
+| Token       | Description             | Example                      |
+| ----------- | ----------------------- | ---------------------------- |
+| `{city}`    | City (general location) | I'm going to Kraków          |
+| `{address}` | Full address            | ul. Długa 5, 00-001 Warszawa |
+| `{email}`   | Email address           | jan@gmail.com                |
+| `{phone}`   | Phone number            | +48 123 456 789              |
 
-### 3. Identyfikatory dokumentów
+### 3. Document Identifiers
 
-| Token               | Opis              | Przykład    |
-| ------------------- | ----------------- | ----------- |
-| `{pesel}`           | Numer PESEL       | 90010112345 |
-| `{document-number}` | Numery dokumentów | ABC123456   |
+| Token               | Description      | Example     |
+| ------------------- | ---------------- | ----------- |
+| `{pesel}`           | PESEL number     | 90010112345 |
+| `{document-number}` | Document numbers | ABC123456   |
 
-### 4. Dane zawodowe i edukacyjne
+### 4. Professional and Educational Data
 
-| Token           | Opis         | Przykład               |
-| --------------- | ------------ | ---------------------- |
-| `{company}`     | Nazwa firmy  | TechPol Sp. z o.o.     |
-| `{school-name}` | Nazwa szkoły | Uniwersytet Warszawski |
-| `{job-title}`   | Stanowisko   | programista            |
+| Token           | Description  | Example              |
+| --------------- | ------------ | -------------------- |
+| `{company}`     | Company name | TechPol Sp. z o.o.   |
+| `{school-name}` | School name  | University of Warsaw |
+| `{job-title}`   | Job title    | programmer           |
 
-### 5. Informacje finansowe
+### 5. Financial Information
 
-| Token                  | Opis        | Przykład            |
-| ---------------------- | ----------- | ------------------- |
-| `{bank-account}`       | Numer konta | PL12 1234 ...       |
-| `{credit-card-number}` | Numer karty | 4111 1111 1111 1111 |
+| Token                  | Description    | Example             |
+| ---------------------- | -------------- | ------------------- |
+| `{bank-account}`       | Account number | PL12 1234 ...       |
+| `{credit-card-number}` | Card number    | 4111 1111 1111 1111 |
 
-### 6. Identyfikatory cyfrowe
+### 6. Digital Identifiers
 
-| Token        | Opis                    | Przykład        |
-| ------------ | ----------------------- | --------------- |
-| `{username}` | Login/nazwa użytkownika | @janek123       |
-| `{secret}`   | Hasła, klucze API       | hasło: tajne123 |
+| Token        | Description         | Example             |
+| ------------ | ------------------- | ------------------- |
+| `{username}` | Login/username      | @janek123           |
+| `{secret}`   | Passwords, API keys | password: secret123 |
 
-## Konfiguracja
+## Configuration
 
-### Opcje CLI
+### CLI Options
 
 ```
-Wejście/Wyjście:
-  -i, --input       Plik wejściowy (JSONL lub TXT)
-  -o, --output      Plik wyjściowy
-  -t, --text        Pojedynczy tekst do anonimizacji
-  --interactive     Tryb interaktywny
-  --format          Format pliku: jsonl lub txt
+Input/Output:
+  -i, --input       Input file (JSONL or TXT)
+  -o, --output      Output file
+  -t, --text        Single text to anonymize
+  --interactive     Interactive mode
+  --format          File format: jsonl or txt
 
-Przetwarzanie:
-  --synthetic       Generuj dane syntetyczne
-  --intermediate    Zachowaj pośrednią reprezentację
-  --no-ml           Wyłącz warstwę ML (tylko regex)
+Processing:
+  --synthetic       Generate synthetic data
+  --intermediate    Keep intermediate representation
+  --no-ml           Disable ML layer (regex only)
 
-Modele:
-  --transformer     Użyj modelu Transformer
-  --model-path      Ścieżka do własnego modelu NER
-  --morphology      Backend: spacy lub stanza
-  --device          cpu lub cuda
+Models:
+  --transformer     Use Transformer model
+  --model-path      Path to custom NER model
+  --morphology      Backend: spacy or stanza
+  --device          cpu or cuda
 
-Wydajność:
-  --workers         Liczba workerów (domyślnie: 1)
-  --seed            Ziarno dla generatora
+Performance:
+  --workers         Number of workers (default: 1)
+  --seed            Seed for generator
 
-Logowanie:
-  -v, --verbose     Szczegółowe logi
-  -q, --quiet       Minimalne logi
+Logging:
+  -v, --verbose     Detailed logs
+  -q, --quiet       Minimal logs
 ```
 
-## Format danych
+## Data Format
 
-### Wejście (JSONL)
+### Input (JSONL)
 
 ```json
 {"text": "Jan Kowalski mieszka w Warszawie."}
 {"text": "Kontakt: anna@email.pl, tel. 123456789"}
 ```
 
-### Wyjście (JSONL)
+### Output (JSONL)
 
 ```json
 {
@@ -323,15 +323,15 @@ Logowanie:
 }
 ```
 
-## Testowanie
+## Testing
 
 ```bash
-# Uruchomienie testów
+# Run tests
 python -m pytest tests/ -v
 
-# Z pokryciem kodu
+# With code coverage
 python -m pytest tests/ --cov=anonymizer --cov-report=html
 
-# Testy wydajności
+# Performance tests
 python -m pytest tests/test_performance.py -v
 ```
