@@ -1,10 +1,5 @@
 # Dane bez Twarzy (Data Without a Face)
 
-## Application Demo
-
-A quick overview of the application in practice
- [Demo video](https://drive.google.com/file/d/1zjd5R_XPt_ISOmOvj2ORvCBK8GyUF-XW/view)
-
 **Personal Data Anonymization System for Polish Texts**
 
 A Python library for automatic detection and anonymization of sensitive data in Polish-language texts. Designed for the PLLuM project (Polish Large Language Model).
@@ -16,6 +11,11 @@ A Python library for automatic detection and anonymization of sensitive data in 
 - **Polish Language Support** - full handling of inflection and linguistic context
 - **Performance** - scalable solution for processing large datasets
 
+## Application Demo
+
+A quick overview of the application in practice, check
+ [video](https://drive.google.com/file/d/1zjd5R_XPt_ISOmOvj2ORvCBK8GyUF-XW/view)
+ 
 ## Architecture
 
 The system uses a multi-layered architecture:
