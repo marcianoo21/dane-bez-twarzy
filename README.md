@@ -1,7 +1,8 @@
 # Dane bez Twarzy (Data Without a Face)
 
-## Demo
+## Application Demo
 
+A quick overview of the application in practice
  [Demo video](https://drive.google.com/file/d/1zjd5R_XPt_ISOmOvj2ORvCBK8GyUF-XW/view)
 
 **Personal Data Anonymization System for Polish Texts**
